@@ -106,6 +106,10 @@ class LaunchCommand(CommandExtension):
             '--namespace',
             help=('A namespace to push to the actions/nodes started by the launch file.')
         )
+        parser.add_argument(
+            '--parameter', action='append', dest='parameters',
+            help='Set a parameter in the launch file; "<name>:=<value>" (for duplicates, last one wins)'
+        )
         arg = parser.add_argument(
             'package_name',
             help='Name of the ROS package which contains the launch file')
@@ -180,5 +184,6 @@ class LaunchCommand(CommandExtension):
                 args=args,
                 option_extensions=self._option_extensions,
                 debug=args.debug,
-                namespace=args.namespace
+                namespace=args.namespace,
+                parameters=args.parameters,
             )

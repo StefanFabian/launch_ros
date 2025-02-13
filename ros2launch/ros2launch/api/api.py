@@ -25,7 +25,7 @@ from ament_index_python.packages import PackageNotFoundError
 import launch
 from launch.frontend import Parser
 from launch.launch_description_sources import get_launch_description_from_any_launch_file
-from launch_ros.actions import PushROSNamespace
+from launch_ros.actions import PushROSNamespace, SetParameter
 
 
 class MultipleLaunchFilesError(Exception):
@@ -147,7 +147,8 @@ def launch_a_launch_file(
     args=None,
     option_extensions={},
     debug=False,
-    namespace=None
+    namespace=None,
+    parameters=[]
 ):
     """Launch a given launch file (by path) and pass it the given launch file arguments."""
     for name in sorted(option_extensions.keys()):
@@ -172,6 +173,9 @@ def launch_a_launch_file(
     launch_description = launch.LaunchDescription()
     if namespace is not None:
         launch_description.add_action(PushROSNamespace(namespace))
+    for parameter in parameters:
+        name, value = parameter.split(':=', maxsplit=1)
+        launch_description.add_action(SetParameter(name=name, value=value))
     launch_description.add_action(
         launch.actions.IncludeLaunchDescription(
             launch.launch_description_sources.AnyLaunchDescriptionSource(
