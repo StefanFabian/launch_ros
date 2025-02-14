@@ -173,9 +173,10 @@ def launch_a_launch_file(
     launch_description = launch.LaunchDescription()
     if namespace is not None:
         launch_description.add_action(PushROSNamespace(namespace))
-    for parameter in parameters:
-        name, value = parameter.split(':=', maxsplit=1)
-        launch_description.add_action(SetParameter(name=name, value=value))
+    if parameters is not None:
+        for parameter in parameters:
+            name, value = parameter.split(':=', maxsplit=1)
+            launch_description.add_action(SetParameter(name=name, value=value))
     launch_description.add_action(
         launch.actions.IncludeLaunchDescription(
             launch.launch_description_sources.AnyLaunchDescriptionSource(
